@@ -1,5 +1,5 @@
 # Poweshell_updateHostsFile
-PowerShell script for @StevenBlack 's hosts project
+PowerShell script for @StevenBlack 's hosts project https://github.com/StevenBlack/hosts.
 
 Below tekst is a copy from the comments in the 'updateHostsFile.ps1' PowerShell script:<BR>
 <BR>

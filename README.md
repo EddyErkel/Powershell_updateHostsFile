@@ -1,6 +1,8 @@
 # Poweshell_updateHostsFile
 PowerShell script for @StevenBlack 's hosts project
 
+Below tekst is a copy from the comments in the 'updateHostsFile.ps1' PowerShell script:<BR>
+<BR>
 .CREATION<BR>
 Created by : Eddy Erkel<BR>
 Version    : 1.5<BR>

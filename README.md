@@ -56,8 +56,8 @@ Whitelist file format:<BR>
 domain-name3.com<BR>
 www.domain-name4.com<BR>
 <BR>
-* domain-name3.com -> all domains ending with domain-name1.com will be whitelisted e.g. www.domain-name1.com, home.domain-name1.com, etc.<BR>
-* www.domain-name4.com -> will whitelist domains ending with www.domain-name2.com (most likely only www.domain-name2.com).<BR>
+/* domain-name3.com -> all domains ending with domain-name1.com will be whitelisted e.g. www.domain-name1.com, home.domain-name1.com, etc.<BR>
+/* www.domain-name4.com -> will whitelist domains ending with www.domain-name2.com (most likely only www.domain-name2.com).<BR>
 <BR>
 .INPUT-FILE blacklist<BR>
 This script will look for the file "blacklist.txt" (unless otherwise specified below) and when found it will add all entries found to the end of the hosts file.<BR>

@@ -1,0 +1,8 @@
+# Domains added below will be white-listed, for example:
+# domain-name1.com
+# www.domain-name2.com
+# 
+# Explanation:
+# domain-name1.com -> all domains ending with domain-name1.com will be whitelisted e.g. www.domain-name1.com, home.domain-name1.com, etc.
+# www.domain-name2.com -> will whitelist domains ending with www.domain-name2.com (most likely only www.domain-name2.com).
+#

@@ -1,0 +1,4 @@
+# Domains added below will be added to the hosts file, for example:
+# 10.0.0.1 www.domain-name1.com
+# 10.0.0.2 www.domain-name2.com
+#

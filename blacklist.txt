@@ -1,0 +1,4 @@
+# Domains added below will be black-listed, for example:
+# www.domain-name5.com
+# www.domain-name6.com
+#

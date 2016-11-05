@@ -42,13 +42,13 @@ Use the hosts directory for downloading and processing. By default the script di
 Display added, white-listed and black-listed hosts.<BR>
 <BR>
 .INPUT-FILE myhosts<BR>
-This script will look for the file "myhosts.txt" (unless otherwise specified below) and when found it will add all entries found to the end of the hosts file.
-The myhost file format is the same as you would add to the hosts file.
-Myhosts file format: 
-10.0.0.1 www.domain-name1.com
-10.0.0.2 www.domain-name2.com
-
-.INPUT-FILE whitelist
+This script will look for the file "myhosts.txt" (unless otherwise specified below) and when found it will add all entries found to the end of the hosts file.<BR>
+The myhost file format is the same as you would add to the hosts file.<BR>
+Myhosts file format:<BR>
+10.0.0.1 www.domain-name1.com<BR>
+10.0.0.2 www.domain-name2.com<BR>
+<BR>
+.INPUT-FILE whitelist<BR>
 This script will look for the file "whitelist.txt" (unless otherwise specified below) and when found it will search through the hosts file and whitelist all domains found in the whitelist file by adding a hash (#) sign at the start of the line.<BR>
 Whitelist file format:<BR> 
 domain-name3.com<BR>

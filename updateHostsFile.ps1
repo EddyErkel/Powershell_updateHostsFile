@@ -1,16 +1,18 @@
 <#
 .CREATION
 Created by : Eddy Erkel
-Version    : 1.4
-Date       : 26 August 2016   
+Version    : 1.5
+Date       : 5 November 2016   
 
 .SYNOPSIS
 Update your hosts file by using different sources from the internet.
 
 .DESCRIPTION
-RUN THIS SCRIPT WITH ADMINISTRATOR PRIVELAGES.
 This PowerShell script will combine local host files with online host files into one, unique host file for safe internet browsing.
 Online hosts file sources are provided by Steven Black at https://github.com/StevenBlack/hosts.
+
+RUN THIS SCRIPT WITH ADMINISTRATOR PRIVELAGES.
+The script needs to be run with administrator privelages, therefor open PowerShell by rightclicking the PowerShell icon and select 'Run as administrator'.
 	
 .PARAMETER Gambling
 Block gambling domains. 
@@ -62,17 +64,17 @@ www.domain-name5.com
 www.domain-name6.com
 
 .EXAMPLE
-.\UpdateHostsFile.ps1 -Gambling -Social -Porn -Replace -Backup 6 -IP 1.2.3.4 -UseHostsDir
-.\UpdateHostsFile.ps1 -Gambling -Social -Porn -IP 127.0.0.1 -Backup 0 -Replace
-.\UpdateHostsFile.ps1 -Gambling -Social -Porn -Backup 3 -Replace
-.\UpdateHostsFile.ps1 -Replace
+.\updateHostsFile.ps1 -Gambling -Social -Porn -Replace -Backup 6 -IP 1.2.3.4 -UseHostsDir
+.\updateHostsFile.ps1 -Gambling -Social -Porn -IP 127.0.0.1 -Backup 0 -Replace
+.\updateHostsFile.ps1 -Gambling -Social -Porn -Backup 3 -Replace
+.\updateHostsFile.ps1 -Replace
 
 To bypass the PowerShell Execution Policy type:
-powershell.exe -executionpolicy bypass -file .\UpdateHostsFile.ps1 -Gambling -Replace
+powershell.exe -executionpolicy bypass -file .\updateHostsFile.ps1 -Gambling -Replace
 
 To create a scheduled task use:
 Program/script: powershell.exe
-Add arguments : -executionpolicy bypass -file <Path-to-script>\UpdateHostsFile.ps1 
+Add arguments : -executionpolicy bypass -file <Path-to-script>\updateHostsFile.ps1 
 Start in	  : Leave blank / empty
 #>
 

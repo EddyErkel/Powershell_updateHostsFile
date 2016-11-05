@@ -6,7 +6,7 @@ Created by : Eddy Erkel
 Version    : 1.5
 Date       : 5 November 2016   
 
-.SYNOPSIS
+.SYNOPSIS<BR>
 Update your hosts file by using different sources from the internet.
 
 .DESCRIPTION

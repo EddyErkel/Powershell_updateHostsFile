@@ -1,8 +1,18 @@
 <#
 .CREATION
 Created by : Eddy Erkel
-Version    : 1.5
-Date       : 5 November 2016   
+Version    : 1.51
+Date       : 27 October 2018  
+
+.DISCLAMER
+This script is provided "as is", without warranty of any kind.
+Use it at your own risk. I assume no liability for damages,
+direct or consequential, that may result from the use of this script.
+
+Grateful for my work and in a generous mood?
+BTC: 18JNWyGhfAmhkWs7jzuuHn54jEZRPj81Jx
+ETH: 0x067e8b995f7dbaf32081bc32927f6fac29b32055
+LTC: LLqwyRiKiuvxkx76grFmbxEeoChLnxvaKH
 
 .SYNOPSIS
 Update your hosts file by using different sources from the internet.

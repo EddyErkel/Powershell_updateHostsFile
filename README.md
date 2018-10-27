@@ -5,8 +5,18 @@ Below tekst is a copy from the comments in the 'updateHostsFile.ps1' PowerShell 
 <BR>
 .CREATION<BR>
 Created by : Eddy Erkel<BR>
-Version    : 1.5<BR>
-Date       : 5 November 2016<BR>
+Version    : 1.51<BR>
+Date       : 27 October 2018<BR>
+<BR>
+.DISCLAMER<BR>
+This script is provided "as is", without warranty of any kind.<BR>
+Use it at your own risk. I assume no liability for damages,<BR>
+direct or consequential, that may result from the use of this script.<BR>
+<BR>
+Grateful for my work and in a generous mood?<BR>
+BTC: 18JNWyGhfAmhkWs7jzuuHn54jEZRPj81Jx<BR>
+ETH: 0x067e8b995f7dbaf32081bc32927f6fac29b32055<BR>
+LTC: LLqwyRiKiuvxkx76grFmbxEeoChLnxvaKH<BR>
 <BR>
 .SYNOPSIS<BR>
 Update your hosts file by using different sources from the internet.<BR>

@@ -98,7 +98,7 @@ Param (
 	[Parameter(Mandatory=$false)]
 	[int]$Backup,
 	[Parameter(Mandatory=$false)]	
-	[string]$IP,
+	[string]$IP = "0.0.0.0",
 	[Parameter(Mandatory=$false)]
 	[switch]$Replace,
 	[Parameter(Mandatory=$false)]
@@ -110,9 +110,6 @@ Param (
 # Read start time
 $startTime = Get-Date
 $timeStamp = (Get-Date -format yyyyMMdd-HHmmss)
-
-# Set defaults IP address
-$defaultIP = "0.0.0.0"
 
 # Set My Hosts file
 $myHosts = "myhosts.txt"
@@ -137,98 +134,45 @@ If (!($scriptPath))
 	$scriptDir = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
 }
 
-Write-Host `n
+Write-Host ""
 
 # Check hosts file last modify date
 $hostFileDate = (Get-Item $hostsDir\hosts).LastWriteTime
-$daysSinceUpdate=(New-TimeSpan -Start $hostFileDate -End $startTime).Days
+$daysSinceUpdate = (New-TimeSpan -Start $hostFileDate -End $startTime).Days
 Write-Host "Your systems current active hosts file was last updated on $hostFileDate ($daysSinceUpdate days ago)."
-Write-Host `n
+Write-Host ""
 
-# Set replacement IP address
-If (!($IP))
-	{	
-	$IP = $defaultIP
-}
-Write-Host "Using `"$IP`" as replace/blacklist IP-address."
+Write-Host "Using '$IP' as replace/blacklist IP-address."
 
 # Set process directory
 If ($UseHostsDir)
 	{
-	Write-Host "Using $hostsDir\ for downloading and processing."
 	$processDir = $hostsDir
 }
 Else 
 	{
-	Write-Host "Using $scriptDir\ for downloading and processing."
 	$processDir = $scriptDir
 }
 
-Write-Host `n
+Write-Host "Using $processDir\ for downloading and processing.`r`n"
 
 # Hosts extensions selection
-If ($Gambling -eq $False -AND $Porn -eq $False -AND $Social -eq $False)
+If ($Gambling, $Porn, $Social -notcontains $true)
 	{
 	# Unified hosts = (Adware + Malware)
 	Write-Host "Selected Unified hosts (Adware + Malware)."
 	$hostsUrl = "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
 	$newHosts = "hosts.unified"
 }
-
-# Unified hosts + Gambling
-If ($Gambling -eq $True -AND $Porn -eq $False -AND $Social -eq $False)
-	{
-	Write-Host "Selected Unified hosts (Adware + Malware) + Gambling."
-	$hostsUrl = "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/gambling/hosts"
-	$newHosts = "hosts.gambling"
-}
-
-# Unified hosts + Porn
-If ($Gambling -eq $False -AND $Porn -eq $True -AND $Social -eq $False)
-	{
-	Write-Host "Selected Unified hosts (Adware + Malware) + Porn"
-	$hostsUrl = "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn/hosts"
-	$newHosts = "hosts.porn"
-}
-
-# Unified hosts + Social
-If ($Gambling -eq $False -AND $Porn -eq $False -AND $Social -eq $True)
-	{
-	Write-Host "Selected Unified hosts (Adware + Malware) + Social"
-	$hostsUrl = "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/social/hosts"
-	$newHosts = "hosts.social"
-}
-
-# Unified hosts + gambling + porn
-If ($Gambling -eq $True -AND $Porn -eq $True -AND $Social -eq $False)
-	{
-	Write-Host "Selected Unified hosts (Adware + Malware) + Gambling + Porn."
-	$hostsUrl = "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/gambling-porn/hosts"
-	$newHosts = "hosts.gambling-porn"
-}
-
-# Unified hosts + gambling + social
-If ($Gambling -eq $True -AND $Porn -eq $False -AND $Social -eq $True)
-	{
-	Write-Host "Selected Unified hosts (Adware + Malware) + Gambling + Social."
-	$hostsUrl = "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/gambling-social/hosts"
-	$newHosts = "hosts.gambling-social"
-}
-
-# Unified hosts + porn + social
-If ($Gambling -eq $False -AND $Porn -eq $True -AND $Social -eq $True)
-	{
-	Write-Host "Selected Unified hosts (Adware + Malware) + Porn + Social."
-	$hostsUrl = "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-social/hosts"
-	$newHosts = "hosts.porn-social"
-}
-
-# Unified hosts + gambling + porn + social
-If ($Gambling -eq $True -AND $Porn -eq $True -AND $Social -eq $True)
-	{
-	Write-Host "Selected Unified hosts (Adware + Malware) + Gambling + Porn + Social."
-	$hostsUrl = "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/gambling-porn-social/hosts"
-	$newHosts = "hosts.gambling-porn-social"
+else
+    {
+    # Hosts extensions selection
+    $urlString = (('gambling' * $Gambling),
+                 ( 'porn'     * $Porn    ),
+                 ( 'social'   * $Social  )).Where{ $_ } -join "-"
+    Write-Host "Selected Unified hosts (Adware + Malware) + $($urlString -replace "-", " + ")"
+    $hostsUrl = "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/$urlString/hosts"
+    $newHosts = "hosts.$urlString"
 }
 
 # Download hosts file
@@ -240,19 +184,18 @@ If (!(Test-Path "$processDir\$newHosts"))
 	Exit
 } 
 
-Write-Host `n
+Write-Host ""
 
 # Replace IP addresses
-(Get-Content "$processDir\$newHosts") | `
-ForEach-Object { $_ -replace "127.0.0.1", "$IP" } | `
-ForEach-Object { $_ -replace "0.0.0.0", "$IP" } | `
-ForEach-Object { $_ -replace "$IP local", "127.0.0.1 local" } | Set-Content "$processDir\$newHosts"
+$newHostsContent = Get-Content "$processDir\$newHosts" |
+    ForEach-Object { $_ -replace "127\.0\.0\.1|0\.0\.0\.0", "$IP" -replace "$IP local", "127.0.0.1 local" }
+Set-Content -Path "$processDir\$newHosts" -Value $newHostsContent
 
 # Add myhosts file contents if file exists
 If (Test-Path "$processDir\$myHosts")
 	{
-	Write-Host "File `"$processDir\$myHosts`" exists."
-	Write-Host "Adding custom domains found in input-file `"$myHosts`"."
+	Write-Host "File '$processDir\$myHosts' exists."
+	Write-Host "Adding custom domains found in input-file '$myHosts'."
 	If ($ReportDomains) {
 		Write-Host "Custom domains:"
 		Get-Content "$processDir\$myHosts" | Where-Object {$_ -notmatch "^#"}
@@ -263,17 +206,17 @@ If (Test-Path "$processDir\$myHosts")
 }
 Else
 	{
-	Write-Host "File `"$processDir\$myHosts`" not found."
+	Write-Host "File '$processDir\$myHosts' not found."
 	Write-Host "No custom domains added."
 }
 
-Write-Host `n
+Write-Host ""
 
 # Add blacklist file contents if file exists
 If (Test-Path "$processDir\$blackList")
 	{
-	Write-Host "File `"$processDir\$blackList`" exists."
-	Write-Host "Adding black-listed domains found in input-file `"$blackList`"."
+	Write-Host "File '$processDir\$blackList' exists."
+	Write-Host "Adding black-listed domains found in input-file '$blackList'."
 	Add-Content -Path "$processDir\$newHosts" -Value ""
 	Add-Content -Path "$processDir\$newHosts" -Value "# Domains added by updateHostsFile.ps1 using input-file $blackList."
 	If ($ReportDomains) {
@@ -281,22 +224,22 @@ If (Test-Path "$processDir\$blackList")
 		Get-Content "$processDir\$blackList" | Where-Object {$_ -notmatch "^#"}
 	}	
 	#Add-Content -Path "$processDir\$newHosts" -Value (Get-Content "$processDir\$blackList" | Where-Object {$_ -notmatch "^#"} )
-	(Get-Content "$processDir\$blackList" | Where-Object {$_ -notmatch "^#"}) | `
+	(Get-Content "$processDir\$blackList" | Where-Object {$_ -notmatch "^#"}) |
 	ForEach-Object { Add-Content -Path "$processDir\$newHosts" -Value "$IP $_" }
 	}
 Else
 	{
-	Write-Host "File `"$processDir\$blackList`" not found."
+	Write-Host "File '$processDir\$blackList' not found."
 	Write-Host "No additional domains black-listed."
 }
 
-Write-Host `n
+Write-Host ""
 	
 # Whitelist domains
 If (Test-Path "$processDir\$whiteList")
 	{
-	Write-Host "File `"$processDir\$whiteList`" exists."
-	Write-Host "White-listing domains found in input-file `"$whiteList`" (this may take a while)."
+	Write-Host "File '$processDir\$whiteList' exists."
+	Write-Host "White-listing domains found in input-file '$whiteList' (this may take a while)."
 	If ($ReportDomains) {
 			Write-Host "White-listed domains:"		
 	}
@@ -314,11 +257,11 @@ If (Test-Path "$processDir\$whiteList")
 }
 Else
 	{
-	Write-Host "File `"$processDir\$whiteList`" not found."
+	Write-Host "File '$processDir\$whiteList' not found."
 	Write-Host "No domains white-listed."
 }
 
-Write-Host `n
+Write-Host ""
 
 # Verify hosts file exists
 If (Test-Path "$hostsDir\hosts") 
@@ -329,27 +272,26 @@ If (Test-Path "$hostsDir\hosts")
 		Write-Host "Creating backup copy of hosts to hosts.backup.$timeStamp."
 		Copy-Item "$hostsDir\hosts" "$hostsDir\hosts.backup.$timeStamp"
 
-		# Cleanup hosts file backups		
+		# Cleanup hosts file backups
 		If ($Backup -gt 0) {
 			Write-Host "Cleanup backup hosts files. Latest $Backup backup files are preserved."
-			Get-ChildItem $hostsDir hosts.backup* | Sort-Object CreationTime -Descending | Select -Skip $Backup | Remove-Item -Force
+			Get-ChildItem $hostsDir hosts.backup* | Sort-Object CreationTime -Descending | Select-Object -Skip $Backup | Remove-Item -Force
 		}
-	Write-Host `n
+	Write-Host ""
 	}
 }
 Else
 	{
 	Write-Host "Hosts file $hostsDir\hosts does not exist. A backup copy will not be created!" -ForeGroundColor Red
-	Write-Host `n
+	Write-Host ""
 }
 
 # Compare new hosts file to current active hosts file
 Write-Host "Comparing new hosts file to current active hosts file (this may take a while)."
 If (Compare-Object $(Get-Content $hostsDir\hosts) $(Get-Content $processDir\$newHosts)) 
-
 	{
 	Write-Host "Updates found."
-	Write-Host `n
+	Write-Host ""
 	
 	# Replace hosts file with newly created hosts file
 	If ($Replace)
@@ -368,7 +310,7 @@ If (Compare-Object $(Get-Content $hostsDir\hosts) $(Get-Content $processDir\$new
 			Write-Host "Copy $processDir\$newHosts to $hostsDir\hosts"
 			Copy-Item -Force "$processDir\$newHosts" "$hostsDir\hosts"
 			
-			Write-Host `n
+			Write-Host ""
 			
 			# Clear DNS Cache
 			Write-Host "Flushing the DNS cache to utilize new hosts file."
@@ -383,9 +325,9 @@ If (Compare-Object $(Get-Content $hostsDir\hosts) $(Get-Content $processDir\$new
 	Else 
 		{
 		Write-Host "New hosts file with updates $processDir\$newHosts has been created."
-		Write-Host `n
+		Write-Host ""
 		Write-Host "The current active hosts file was not replaced and activated!" -Foregroundcolor Red
-		Write-Host "To replace and activate new hosts file add `"-Replace`" option."
+		Write-Host 'To replace and activate new hosts file add "-Replace" option.'
 	}
 	
 	
@@ -395,30 +337,9 @@ Else
 	Write-Host "No updates found."
 }
 
-Write-Host `n
+Write-Host ""
 
-$endTime = Get-Date
-$runTime=(New-TimeSpan -Start $startTime -End $endTime).ToString()
+$runTime = New-TimeSpan -Start $startTime -End (Get-Date)
 
-Write-Output "This script was executed in $(($endTime).Subtract($startTime).Minutes) minutes and $(($endTime).Subtract($startTime).Seconds) seconds."
-Write-Host `n
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Write-Output "This script was executed in $($runTime.Minutes) minutes and $($runTime.Seconds) seconds."
+Write-Host ""
